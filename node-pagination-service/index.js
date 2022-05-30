@@ -1,19 +1,15 @@
 const mongo = require("mongoose")
 const express = require("express")
 const routes = require("./routes")
-
+const env = require('dotenv')
 const connectDB =async ()=>{
-   mongo.connect('mongodb://localhost:27020/viagog',
-  {
+  await mongo.connect(`mongodb://127.0.0.1:27017/practiceDB`, {
+    useUnifiedTopology: true,
     useNewUrlParser: true,
-    useUnifiedTopology: true
-  },
-  console.log("database connected")
-)
-
+  })
+   console.log("database connected",mongo.connection.port)
 }
 connectDB();
-
 const app = express()
 
 app.get('/',(req,res)=>{

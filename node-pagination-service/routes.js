@@ -1,17 +1,16 @@
 const express = require('express')
-const mongoose = require('mongoose')
-const eventsSchema = mongoose.Schema;
+const events = require('./models/eventks')
+const practiceModel = require('./models/practiceDB')
 const app = express()
 
 app.get('/allevents',async(req,res,next)=>{
 
     try {
-    const eventtks = new eventsSchema({},{strict:false})
-    const eventsCollection = mongoose.model('eventtks', eventtks)
-    const events= eventsCollection.find({})
-    console.log(events)
+    
+    let result= await events.find({})
+    console.log(result)
 
-    res.send(events)
+    res.send({result})
     } catch (error) {
      
         console.log(error)
@@ -21,6 +20,14 @@ app.get('/allevents',async(req,res,next)=>{
 })
 
 
+app.get('/practicedb', async(req,res,next)=>{
+    try {
+        let result = await practiceModel.find({});
+        res.send({result})
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 
 module.exports = app;
