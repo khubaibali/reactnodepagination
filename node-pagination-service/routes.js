@@ -8,7 +8,7 @@ app.get('/allevents',async(req,res,next)=>{
     try {
     
     let result= await events.find({})
-    console.log(result)
+    // console.log(result)
 
     res.send({result})
     } catch (error) {
