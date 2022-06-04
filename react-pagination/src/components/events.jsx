@@ -1,17 +1,32 @@
-import { React,useEffect,useState,useCallback } from "react";
+import { React,useEffect,useState,useMemo } from "react";
 import { Table } from "react-bootstrap";
-import IOSSwitch from "../smallcomponents/IosSwitch"
+import {selectAllEvents} from '../features/selectAllSlice'
 import SelectAll from "../smallcomponents/SelectAll";
-import {useSelector} from 'react-redux'
+import SingleEventTR from "../smallcomponents/SingleEventTR";
+import {useSelector,useDispatch} from 'react-redux'
 function EventTKS(){
 const [allevents ,setAllEvents] = useState([])
-let selectedEvents = new Set()
-let state = useSelector((state)=>state)
-console.log("from events",state)
+const dispatch = useDispatch();
+let isSelectAll = useSelector(state=>(state.selectAll.isSelect))
+
 useEffect(()=>{
     console.log('runn');
     fetchEvents(setAllEvents)
 },[])
+
+useEffect(()=>{
+    if(isSelectAll){
+        console.log('I ran')
+        console.log(allevents)
+        let eventid= []
+        allevents.forEach((item)=>{
+            eventid.push(item.eventid)
+        })
+        dispatch(selectAllEvents([...eventid]))
+    }
+
+},[isSelectAll])
+
 
 console.log('com rerender')
 return(
@@ -46,18 +61,9 @@ return(
         </tr>
     </thead>
     <tbody>
-            {allevents.map((item,index)=>(
-                <tr key={index+Math.random()*120}>
-                    <td>{index+1}</td>
-                    <td><input type="checkbox" name="" id="" checked={true}  /></td>
-                    <td>{item.eventname}</td>
-                    <td>{item.eventvenue}</td>
-                    <td>{item.eventdate}</td>
-                    <td>{item.intervaltime}</td>
-                    <td><IOSSwitch defaultChecked={item.startmonitoring} /></td>
-                    <td></td>
-                </tr> 
-                ))}
+            {useMemo(()=> allevents.map((item,index)=>(
+               <SingleEventTR item={item} index={index} key={index+Math.random()*120}/>
+            )),[allevents]) }
     </tbody>
 </Table>
 </>
@@ -66,7 +72,11 @@ return(
 }
 
 async function fetchEvents(setAllEvents){
-  let response = await (await fetch("http://localhost:4001/allevents")).json()
+    let response=[]
+    response = await (await fetch("http://localhost:4001/allevents")).json()
+    response.result.forEach((item)=>{
+        item.isSelected=false;
+    })
    setAllEvents([...response.result])                    
 }
 

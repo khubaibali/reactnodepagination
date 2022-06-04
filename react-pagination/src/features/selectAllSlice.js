@@ -1,8 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState={
     isSelect:false,
-    selectedEvents:new Set()
+    isSingleSelectCheck:false,
+    selectedEvents:[],
+    status:'idle',
+    error:null
 }
 
 export const selectAllSlice = createSlice({
@@ -11,12 +14,31 @@ export const selectAllSlice = createSlice({
     reducers:{
         changeSelectState:(state)=>{
             state.isSelect = !state.isSelect
+            state.isSingleSelectCheck=false
+            console.log('oooh chane')
+            if(state.isSelect===false){
+                state.selectedEvents=[]
+            }
         },
         selectSingleEvent:(state)=>{
-            state.selectedEvents.add(state.eventid)
+            state.isSelect = false
+            state.isSingleSelectCheck = true 
+        },
+        selectAllEvents:(state,action)=>{
+            console.log('reaction',action)
+            console.log('redux',state)
+            state.selectedEvents= state.payload
         }
     }
 })
 
-export const {changeSelectState} = selectAllSlice.actions
+
+export const fetchTableData = createAsyncThunk('tabledata', async () =>{
+    const response =  await (await fetch("http://localhost:4001/allevents")).json()
+    return response.result
+})
+
+
+
+export const {changeSelectState,selectSingleEvent,selectAllEvents} = selectAllSlice.actions
 export default selectAllSlice.reducer
