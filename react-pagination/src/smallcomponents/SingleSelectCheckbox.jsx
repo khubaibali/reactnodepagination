@@ -1,26 +1,38 @@
 import { useEffect, useState } from "react"
 import { useSelector ,useDispatch} from "react-redux"
-import { selectSingleEvent } from "../features/selectAllSlice"
-const SingleSelectCheckbox =({isSelected})=>{
-    let {isSelect,isSingleSelectCheck} = useSelector((state)=>state.selectAll)
-    
-    const [isSingleSelect,setSingleSelect] = useState(isSelect)
+import { selectSingleEvent,changeSelectAllState,unCheckedSelectAllOnly } from "../features/selectAllSlice"
+import { store } from "../store"
+
+const SingleSelectCheckbox =({eventId})=>{
+
     const dispatch = useDispatch()
+    let {isSelect,letSingleCheck,selectedEventId} = useSelector((state)=>state.selectAll)
+    const [tick,setTick] = useState(false)
     useEffect(()=>{
-        setSingleSelect(isSelect)
-    },[isSelect])
-    
-   {return(
+        if(selectedEventId.includes(eventId)){
+            setTick(true)
+            return
+        }
+        setTick(false)
+    },[isSelect,selectedEventId])
+   return(
     <>
-        <input type="checkbox" name="checkbox" id="" checked={isSelected} onChange={()=>{onSelectChange()}}/>   
+        <input type="checkbox" name="checkbox" id="" checked={tick } onChange={()=>{tickChange()}}/>   
     </>
-   )}
-   
-   function onSelectChange(){
-       dispatch(selectSingleEvent())
-       setSingleSelect(!isSingleSelect)
+   )
+   function tickChange(){
+       if(isSelect){
+        console.log(store.getState())
+           dispatch(unCheckedSelectAllOnly({eventId}))
+           return
+        }
+        dispatch(selectSingleEvent({eventId,tick}))
+        
+        console.log(store.getState())
+    }
+
    }
-}
+
 
 
 export default SingleSelectCheckbox 

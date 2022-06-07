@@ -1,32 +1,19 @@
 import { React,useEffect,useState,useMemo } from "react";
 import { Table } from "react-bootstrap";
-import {selectAllEvents} from '../features/selectAllSlice'
+import {selectAllEvents,fetchTableData} from '../features/selectAllSlice'
 import SelectAll from "../smallcomponents/SelectAll";
 import SingleEventTR from "../smallcomponents/SingleEventTR";
 import {useSelector,useDispatch} from 'react-redux'
 function EventTKS(){
-const [allevents ,setAllEvents] = useState([])
+
 const dispatch = useDispatch();
-let isSelectAll = useSelector(state=>(state.selectAll.isSelect))
+let {loading,tableData} = useSelector(state=>(state.selectAll))
+
 
 useEffect(()=>{
-    console.log('runn');
-    fetchEvents(setAllEvents)
+    dispatch(fetchTableData())
+    console.log(loading)        
 },[])
-
-useEffect(()=>{
-    if(isSelectAll){
-        console.log('I ran')
-        console.log(allevents)
-        let eventid= []
-        allevents.forEach((item)=>{
-            eventid.push(item.eventid)
-        })
-        dispatch(selectAllEvents([...eventid]))
-    }
-
-},[isSelectAll])
-
 
 console.log('com rerender')
 return(
@@ -38,7 +25,7 @@ return(
                 #
             </th>
             <th>
-               <SelectAll/>
+             <SelectAll/>
             </th>
             <th>
                 Name
@@ -61,9 +48,9 @@ return(
         </tr>
     </thead>
     <tbody>
-            {useMemo(()=> allevents.map((item,index)=>(
+            {useMemo(()=> tableData.map((item,index)=>(
                <SingleEventTR item={item} index={index} key={index+Math.random()*120}/>
-            )),[allevents]) }
+            )),[tableData]) }
     </tbody>
 </Table>
 </>
@@ -71,14 +58,6 @@ return(
 
 }
 
-async function fetchEvents(setAllEvents){
-    let response=[]
-    response = await (await fetch("http://localhost:4001/allevents")).json()
-    response.result.forEach((item)=>{
-        item.isSelected=false;
-    })
-   setAllEvents([...response.result])                    
-}
 
 
 export default EventTKS 

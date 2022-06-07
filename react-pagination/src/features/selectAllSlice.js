@@ -2,43 +2,74 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState={
     isSelect:false,
-    isSingleSelectCheck:false,
-    selectedEvents:[],
-    status:'idle',
-    error:null
+    tableData:[],
+    loading:false,
+    error:null,
+    selectedEventId:[]
 }
+
+export const fetchTableData = createAsyncThunk('selectall/tabledata', async () =>{
+
+    try {
+            const {result} =  await (await fetch("http://localhost:4001/allevents")).json()
+            return result
+        
+    } catch (error) {
+       
+    }
+    })
+    
 
 export const selectAllSlice = createSlice({
     name:'selectall',
     initialState,
     reducers:{
-        changeSelectState:(state)=>{
+        changeSelectAllState:(state)=>{
             state.isSelect = !state.isSelect
-            state.isSingleSelectCheck=false
             console.log('oooh chane')
             if(state.isSelect===false){
-                state.selectedEvents=[]
+                state.selectedEventId=[]
+                return
             }
+            state.tableData.forEach((item)=>{
+                state.selectedEventId.push(item.eventid)
+            })
         },
-        selectSingleEvent:(state)=>{
-            state.isSelect = false
-            state.isSingleSelectCheck = true 
+        unCheckedSelectAllOnly:(state,action)=>{
+            const{eventId} = action.payload
+            state.selectedEventId = state.selectedEventId.filter((item)=> item!==eventId)
+            state.isSelect=false;
+            
         },
-        selectAllEvents:(state,action)=>{
-            console.log('reaction',action)
-            console.log('redux',state)
-            state.selectedEvents= state.payload
+        selectSingleEvent:(state,action)=>{
+            const{tick,eventId} = action.payload
+            if(tick === true){
+               state.selectedEventId= state.selectedEventId.filter((item)=> item!==eventId)
+                return
+            }
+            state.selectedEventId.push(action.payload.eventId)
+            
+        }
+        
+    },
+    extraReducers:{
+        [fetchTableData.pending]:(state,{payload}) => {
+            state.loading = true
+        },
+        [fetchTableData.fulfilled]:(state,{payload})=>{
+            state.loading = false
+            state.tableData=payload
+        
+        },
+        [fetchTableData.rejected]:(state,{payload})=>{
+            state.loading=false;
         }
     }
 })
 
 
-export const fetchTableData = createAsyncThunk('tabledata', async () =>{
-    const response =  await (await fetch("http://localhost:4001/allevents")).json()
-    return response.result
-})
 
 
 
-export const {changeSelectState,selectSingleEvent,selectAllEvents} = selectAllSlice.actions
+export const {changeSelectAllState,selectSingleEvent,unCheckedSelectAllOnly} = selectAllSlice.actions
 export default selectAllSlice.reducer

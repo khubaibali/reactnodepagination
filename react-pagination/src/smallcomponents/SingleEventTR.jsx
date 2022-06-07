@@ -6,7 +6,7 @@ const SingleEventTR = ({item,index})=>{
     <>
         <tr>
             <td>{index+1}</td>
-            <td><SingleSelectCheckbox isSelected={item.isSelected}/></td>
+            <td><SingleSelectCheckbox isSelected={item.isSelected} eventId={item.eventid} index={index}/></td>
             <td>{item.eventname}</td>
             <td>{item.eventvenue}</td>
             <td>{item.eventdate}</td>

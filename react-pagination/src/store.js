@@ -5,3 +5,7 @@ export const store = configureStore({
       selectAll:selectallreducer,
   },
 })
+
+
+
+
