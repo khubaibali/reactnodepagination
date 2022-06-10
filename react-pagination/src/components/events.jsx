@@ -6,7 +6,8 @@ import {selectAllEvents,fetchTableData} from '../features/selectAllSlice'
 function EventTKS() {
 
     const dispatch = useDispatch();
-    let { loading } = useSelector(state => (state.selectAll))
+    let loading  = useSelector(state => (state.selectAll.loading))
+    console.log("event render")
     if(loading==='idle'){
         dispatch(fetchTableData())
     }     

@@ -6,7 +6,8 @@ import SingleEventTR from "../smallcomponents/SingleEventTR";
 import {useSelector,useDispatch} from 'react-redux'
 
 const EventTable = () => {
-    let {tableData} = useSelector(state=>(state.selectAll))
+    let tableData = useSelector(state=>(state.selectAll.tableData))
+    console.log("table render")
     return (
         <>
             <Table className="table table-striped">
@@ -19,7 +20,7 @@ const EventTable = () => {
                             {
                                 useMemo(() => {
                                     return <SelectAll />
-                                }, [])
+                                },[])
                             }
                         </th>
                         <th>
