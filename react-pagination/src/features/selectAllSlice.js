@@ -3,7 +3,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 const initialState={
     isSelect:false,
     tableData:[],
-    loading:false,
+    loading:"idle",
     error:null,
     selectedEventId:[]
 }
