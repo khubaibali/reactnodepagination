@@ -16,7 +16,7 @@ let navigate = useNavigate()
             <td>{item.eventdate}</td>
             <td>{item.intervaltime}</td>
             <td><IOSSwitch defaultChecked={item.startmonitoring} /></td>
-            <td><IconButton onClick={()=>{navigate(`/tickettek/${item.eventid}`)}}><EditOutlined/></IconButton> </td>
+            <td><IconButton size="small" color="primary" onClick={()=>{navigate(`/tickettek/${item.eventid}`)}}><EditOutlined fontSize="small"/></IconButton> </td>
         </tr> 
     </>)
 }

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { useSelector ,useDispatch} from "react-redux"
-import { selectSingleEvent,changeSelectAllState,unCheckedSelectAllOnly } from "../features/selectAllSlice"
+import { selectSingleEvent,unCheckedSelectAllOnly } from "../features/selectAllSlice"
 import { store } from "../store"
 
 const SingleSelectCheckbox =({eventId})=>{
 
     const dispatch = useDispatch()
-    let {isSelect,letSingleCheck,selectedEventId} = useSelector((state)=>state.selectAll)
+    let {isSelect,selectedEventId} = useSelector((state)=>state.selectAll)
     const [tick,setTick] = useState(false)
     useEffect(()=>{
         if(selectedEventId.includes(eventId)){
